@@ -43,7 +43,7 @@ namespace WebAPINet6.WebApi.Controllers
             if (symbolsInfoFromCache == null || symbolsInfoFromClient == null)
             {
                 _logger.LogWarning("TTWS server ili cache je vratio null za id: {id}", ids);
-                return NotFound();
+            
             }
             var result = symbolsInfoFromCache.Concat(symbolsInfoFromClient).ToList();
 
