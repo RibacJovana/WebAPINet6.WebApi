@@ -44,10 +44,8 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 
     services.Configure<TTWSConfiguration>(configuration.GetSection(nameof(TTWSConfiguration)));
 
-    services.AddHttpClient<WebAPINet6.BusinessLogic.Repository.IClient, WebAPINet6.BusinessLogic.Repository.Client>();
-
-    // dodaje singleton klasu IMemoryCache
-    services.AddMemoryCache();
+    services.AddHttpClient("Client");
+    services.AddScoped<WebAPINet6.BusinessLogic.Repository.IClient, WebAPINet6.BusinessLogic.Repository.Client>();
 
     services.AddSingleton<Keys>();
     services.AddScoped<IClient, Client>();
@@ -55,8 +53,10 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
     services.AddScoped<ICacheTaker, CacheTaker>();
     services.AddScoped<IClientTaker, ClientTaker>();
 
+    // dodaje singleton klasu IMemoryCache
+    services.AddMemoryCache();
+
     // dodavanje middleware
-    services.AddSingleton<MyMiddleware>();
     services.AddSingleton<LoggingMiddleware>();
 
     // dodavanje background task
@@ -78,8 +78,6 @@ static void ConfigureMiddleware(IApplicationBuilder builder, IServiceProvider pr
     builder.UseSwaggerUI();
 
     builder.UseMiddleware<LoggingMiddleware>();
-
-    builder.UseMiddleware<MyMiddleware>();
 
     builder.UseHttpsRedirection();
 
