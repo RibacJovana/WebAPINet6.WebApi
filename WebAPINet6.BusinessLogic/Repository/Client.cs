@@ -8,7 +8,6 @@ namespace WebAPINet6.BusinessLogic.Repository
     {
         private readonly HttpClient _client;
         private readonly AsyncRetryPolicy _policy;
-        private readonly ILogger _logger;
 
         public Client(HttpClient client)
         {
@@ -31,11 +30,6 @@ namespace WebAPINet6.BusinessLogic.Repository
             {
                 response = await _client.GetAsync($"{uri}/ttws-net/?action=getSymbols&customerID={customerID}&id={ids}");
                 response.EnsureSuccessStatusCode();
-
-                if (response == null)
-                {
-                    _logger.LogWarning("TTWS server je vratio null");
-                }
             });
            
             return await response!.Content.ReadAsStringAsync();

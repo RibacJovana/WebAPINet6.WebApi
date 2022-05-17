@@ -40,7 +40,7 @@ namespace WebAPINet6.BusinessLogic.Services
                         // ako id jeste u cache, zato sto je symbolInfo prosledjena kao OUT, imamo informacije koje je cache vratio
                         infoFromCache.Add(symbolInfo);
 
-                        _logger.LogInformation("From cahce took id: {id}", id);
+                        _logger.LogInformation("From cache took id: {id}", id);
                     }
                 });
             }
