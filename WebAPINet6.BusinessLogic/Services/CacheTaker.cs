@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using WebAPINet6.BusinessLogic.Model;
+using WebAPINet6.BusinessLogic.Services.Interfaces;
 using WebAPINet6.WebApi;
 
 namespace WebAPINet6.BusinessLogic.Services
@@ -8,35 +10,40 @@ namespace WebAPINet6.BusinessLogic.Services
     {
         private readonly IMemoryCache _cache;
         private readonly Keys _keys;
-        public CacheTaker(IMemoryCache cache, Keys keys)
+        private readonly ILogger<CacheTaker> _logger;
+
+        public CacheTaker(IMemoryCache cache, Keys keys, ILogger<CacheTaker> logger)
         {
             _cache = cache;
             _keys = keys;
+            _logger = logger;
         }
 
-        public async Task<List<SymbolInfo>> GetSymbolsInfo(string[] ids)
+        public async Task<List<SymbolInfo>> GetSymbolsInfo(string[]? ids)
         { 
-            List<SymbolInfo> infoFromCache = new List<SymbolInfo>();
+            List<SymbolInfo> infoFromCache = new();
 
-            foreach (var id in ids)
+            foreach (string id in ids!)
             {
-                SymbolInfo symbolInfo;
-
-                // proveravamo da li id imamo vec u cache-u 
-                var isInCache = _cache.TryGetValue(id, out symbolInfo);
-
-                if (!isInCache)
+                await Task.Run(() =>
                 {
-                    // ako id nije u cache, dodajemo ga u poseban niz radi evidencije
-                    _keys.missingKeys.Add(id);
-                }
-                else
-                {
-                    // ako id jeste u cache, zato sto je symbolInfo prosledjena kao OUT, imamo informacije koje je cache vratio
-                    infoFromCache.Add(symbolInfo);
-                }
+                    // proveravamo da li id imamo vec u cache-u 
+                    var isInCache = _cache.TryGetValue(id, out SymbolInfo symbolInfo);
+
+                    if (!isInCache)
+                    {
+                        // ako id nije u cache, dodajemo ga u poseban niz radi evidencije
+                        _keys.missingKeys.Add(id);
+                    }
+                    else
+                    {
+                        // ako id jeste u cache, zato sto je symbolInfo prosledjena kao OUT, imamo informacije koje je cache vratio
+                        infoFromCache.Add(symbolInfo);
+
+                        _logger.LogInformation("From cahce took id: {id}", id);
+                    }
+                });
             }
-
             return infoFromCache;
         }
 

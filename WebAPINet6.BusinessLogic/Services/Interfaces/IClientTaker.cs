@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using WebAPINet6.WebApi;
 
-namespace WebAPINet6.BusinessLogic.Services
+namespace WebAPINet6.BusinessLogic.Services.Interfaces
 {
-    public interface ICacheTaker
+    public interface IClientTaker
     {
-        public Task<List<SymbolInfo>> GetSymbolsInfo(string[] ids);
+        public Task<List<SymbolInfo>> GetSymbolsInfo();
     }
 }

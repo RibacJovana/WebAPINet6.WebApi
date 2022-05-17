@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPINet6.WebApi", "WebAPINet6.WebApi\WebAPINet6.WebApi.csproj", "{F926B6E5-2058-4FB0-ACFF-B342B0102C8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPINet6.WebApi", "WebAPINet6.WebApi\WebAPINet6.WebApi.csproj", "{F926B6E5-2058-4FB0-ACFF-B342B0102C8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPINet6.BusinessLogic", "WebAPINet6.BusinessLogic\WebAPINet6.BusinessLogic.csproj", "{70356FE1-0910-4C4D-88CE-5DAA273C7F42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPINet6.BusinessLogic", "WebAPINet6.BusinessLogic\WebAPINet6.BusinessLogic.csproj", "{70356FE1-0910-4C4D-88CE-5DAA273C7F42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPINet6.Test", "WebAPINet6.Test\WebAPINet6.Test.csproj", "{98E37B2A-9010-4D21-8FD9-FDCA71A9371E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{70356FE1-0910-4C4D-88CE-5DAA273C7F42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70356FE1-0910-4C4D-88CE-5DAA273C7F42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70356FE1-0910-4C4D-88CE-5DAA273C7F42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98E37B2A-9010-4D21-8FD9-FDCA71A9371E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98E37B2A-9010-4D21-8FD9-FDCA71A9371E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98E37B2A-9010-4D21-8FD9-FDCA71A9371E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98E37B2A-9010-4D21-8FD9-FDCA71A9371E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,15 +1,16 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using WebAPINet6.BusinessLogic.Services.Interfaces;
 using WebAPINet6.WebApi;
 
 namespace WebAPINet6.BusinessLogic.Services
 {
     public class XmlParser : IXmlParser
     {
-        public async Task<List<SymbolInfo>> Parse(string xml_string)
+        public List<SymbolInfo> Parse(string xml_string)
         {
-            List<SymbolInfo> result = new List<SymbolInfo>();
+            List<SymbolInfo>? result = new();
 
             // dobijamo xml koji je tipa string i parsiramo ga da dobijemo XElement
             XElement _xElement = XElement.Parse(xml_string);
@@ -17,15 +18,13 @@ namespace WebAPINet6.BusinessLogic.Services
 
             IEnumerable<XElement> symbolsFromXElement = _xElement.Descendants(nameSpace + "Symbol");
 
-            XmlSerializer serializer = new XmlSerializer(typeof(SymbolInfo));
+            XmlSerializer serializer = new(typeof(SymbolInfo));
 
             // deserializujemo objekte iz xml formata u objekat klase i dodajemo u nasu listu objekata
             foreach (XElement symbol in symbolsFromXElement)
             {
-                using (XmlReader reader = symbol.CreateReader())
-                {
-                    result.Add((SymbolInfo)serializer.Deserialize(reader));
-                }
+                using XmlReader reader = symbol.CreateReader();
+                result.Add((SymbolInfo)serializer.Deserialize(reader)!);
             }
             return result;
         }

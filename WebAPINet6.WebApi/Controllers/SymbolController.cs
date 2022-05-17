@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using WebAPINet6.BusinessLogic.Services;
 using WebAPINet6.BusinessLogic.Model;
+using WebAPINet6.BusinessLogic.Services.Interfaces;
 
 namespace WebAPINet6.WebApi.Controllers
 {
