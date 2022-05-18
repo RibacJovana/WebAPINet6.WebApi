@@ -35,7 +35,6 @@ static void ConfigureLogging(ILoggingBuilder logging, IConfiguration configurati
 
     if (hostEnvironment.EnvironmentName != Environments.Development) return;
 
-    var path = Directory.GetCurrentDirectory();
     logging.AddFile();
 }
 
