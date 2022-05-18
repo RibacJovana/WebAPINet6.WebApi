@@ -3,7 +3,5 @@
     public class Keys
     {
         public HashSet<string> cacheKeys = new();
-
-        public HashSet<string> missingKeys = new();
     }
 }

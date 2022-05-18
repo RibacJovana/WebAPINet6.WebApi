@@ -13,7 +13,7 @@ namespace WebAPINet6.Test
 {
     public class UnitTest
     {
-        Mock<ILogger<LoggingMiddleware>> logger = new Mock<ILogger<LoggingMiddleware>>();
+        readonly Mock<ILogger<LoggingMiddleware>> logger = new();
 
         [Fact]
         public async Task TestLoggingMiddleware_Valid_ID()
@@ -23,11 +23,12 @@ namespace WebAPINet6.Test
 
             var wasExecuted = false;
 
-            RequestDelegate next = (HttpContext ctx) => 
-            { 
+            // lokalna metoda
+            Task next(HttpContext ctx)
+            {
                 wasExecuted = true;
                 return Task.CompletedTask;
-            };
+            }
 
             var middleware = new LoggingMiddleware(logger.Object);
             await middleware.InvokeAsync(context, next);
@@ -43,11 +44,12 @@ namespace WebAPINet6.Test
 
             var wasExecuted = false;
 
-            RequestDelegate next = (HttpContext ctx) =>
+            // lokalna metoda
+            Task next(HttpContext ctx)
             {
                 wasExecuted = true;
                 return Task.CompletedTask;
-            };
+            }
 
             var middleware = new LoggingMiddleware(logger.Object);
             await middleware.InvokeAsync(context, next);
