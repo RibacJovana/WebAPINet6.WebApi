@@ -47,7 +47,7 @@ namespace WebAPINet6.BusinessLogic.Services
             // U globalnu staticku listu dodajemo sve ids koji nisu bili u cache
             // ta lista nam sluzi da evidentiramo sve ids koji su u cache
             // Pakujemo u cache sve informacije koje smo dobili od klijenta
-            foreach (SymbolInfo symbol in infoFromClient)
+            foreach (SymbolInfo symbol in infoFromClient.GroupBy(x => x.Id).Select(x => x.FirstOrDefault()).Distinct())
             {
                 string id = symbol.Id;
                 _cache.Set(symbol.Id, symbol, TimeSpan.FromSeconds(60));

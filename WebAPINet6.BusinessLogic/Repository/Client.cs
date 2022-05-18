@@ -1,5 +1,6 @@
 ﻿using Polly;
 using Polly.Retry;
+using System.Net.Http;
 
 namespace WebAPINet6.BusinessLogic.Repository
 {
@@ -25,14 +26,15 @@ namespace WebAPINet6.BusinessLogic.Repository
         public async Task<string> GetSymbolsByIDs(string ids, string uri, int customerID)
         {
             HttpClient client = _clientFactory.CreateClient("Client");
-            HttpResponseMessage? response = null;
+            HttpResponseMessage response = new();
+
             await _policy.ExecuteAsync(async () =>
             {
-                response = await client.GetAsync($"{uri}/ttws-net/?action=getSymbols&customerID={customerID}&id={ids}");
+                response = await client.GetAsync($"{uri}/ttws-net/?action=getSymbols&customerID={customerID}&id={ids}", HttpCompletionOption.ResponseContentRead);
                 response.EnsureSuccessStatusCode();
             });
            
-            return await response!.Content.ReadAsStringAsync();
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }

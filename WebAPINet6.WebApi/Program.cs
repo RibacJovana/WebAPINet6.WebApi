@@ -5,6 +5,8 @@ using WebAPINet6.BusinessLogic.Services;
 using WebAPINet6.BusinessLogic.Enumerations;
 using WebAPINet6.BusinessLogic.Services.Background;
 using WebAPINet6.BusinessLogic.Services.Interfaces;
+using Polly.Registry;
+using Polly;
 
 WebApplicationBuilder webApplicationBuilder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +35,7 @@ static void ConfigureLogging(ILoggingBuilder logging, IConfiguration configurati
     logging.ClearProviders();
     logging.AddConfiguration(configuration.GetSection("Logging"));
 
-    if (hostEnvironment.EnvironmentName != Environments.Development) return;
+    if (hostEnvironment.EnvironmentName == Environments.Production) return;
 
     logging.AddFile();
 }
@@ -45,7 +47,22 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 
     services.Configure<TTWSConfiguration>(configuration.GetSection(nameof(TTWSConfiguration)));
 
-    services.AddHttpClient("Client");
+    services.AddPolicyRegistry(new PolicyRegistry() 
+    {
+        {    
+            "HttpClientPolicy",
+            Policy.Handle<Exception>().WaitAndRetryAsync(new[]
+            {
+                TimeSpan.FromMilliseconds(200),
+                TimeSpan.FromMilliseconds(500),
+                TimeSpan.FromSeconds(1)
+            }, (exception, timespan) =>
+            {
+                Console.WriteLine(exception.Message, timespan);
+            })
+        }
+    });
+    services.AddHttpClient("Client"); //.AddPolicyHandlerFromRegistry("HttpClientPolicy");
     services.AddSingleton<Keys>();
     services.AddScoped<IClient, Client>();
     services.AddScoped<IXmlParser, XmlParser>();

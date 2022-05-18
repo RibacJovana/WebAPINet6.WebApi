@@ -11,12 +11,14 @@ namespace WebAPINet6.BusinessLogic.Services.Background
         private readonly IServiceProvider _provider;
         private readonly Keys _keys;
         private readonly ILogger<CacheUpdater> _log;
+        private readonly IMemoryCache _cache;
 
-        public CacheUpdater(IServiceProvider provider, Keys keys, ILogger<CacheUpdater> logger) 
+        public CacheUpdater(IServiceProvider provider, Keys keys, ILogger<CacheUpdater> logger, IMemoryCache cache) 
         {
             _provider = provider;
             _keys = keys;
             _log = logger;
+            _cache = cache;
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -26,20 +28,21 @@ namespace WebAPINet6.BusinessLogic.Services.Background
                 { 
                     var scopedProvider = scope.ServiceProvider;
                     var client = scope.ServiceProvider.GetRequiredService<Interfaces.IClient>();
-                    IMemoryCache cache = scope.ServiceProvider.GetRequiredService<IMemoryCache>();
-                   
-                    foreach (var key in _keys.cacheKeys)
+
+                    var keys = new HashSet<string>();
+                    lock (_keys)
+                        keys = _keys.cacheKeys;
+
+                    foreach (var key in keys)
                     {
                         var result = await client.GetSymbols(key);
-
-                        lock (cache)
-                            cache.Set(key, result.First(), TimeSpan.FromSeconds(60));
                         
+                        _cache.Set(key, result.First(), TimeSpan.FromSeconds(60));
                         _log.LogInformation("BACKGROUND TASK: In cache, updated id: {id}", key);
                     }
                 }
                 
-                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken);
             }
         }
     }
