@@ -1,8 +1,8 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using WebAPINet6.BusinessLogic.Services.Interfaces;
 using WebAPINet6.WebApi;
+using WebAPINet6.BusinessLogic.Services.Interfaces;
 
 namespace WebAPINet6.BusinessLogic.Services
 {
