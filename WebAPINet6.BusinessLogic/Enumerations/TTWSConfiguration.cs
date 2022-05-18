@@ -2,7 +2,7 @@
 {
     public class TTWSConfiguration
     {
-        public string? Uri { get; set; }
+        public string Uri { get; set; } = string.Empty;
         public int CustomerID { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace WebAPINet6.BusinessLogic.Repository
             });
         }
 
-        public async Task<string> GetSymbolsByIDs(string ids, string? uri, int customerID)
+        public async Task<string> GetSymbolsByIDs(string ids, string uri, int customerID)
         {
             HttpClient client = _clientFactory.CreateClient("Client");
             HttpResponseMessage? response = null;

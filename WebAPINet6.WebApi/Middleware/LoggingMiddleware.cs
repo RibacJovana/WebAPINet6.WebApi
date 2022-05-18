@@ -19,9 +19,9 @@ namespace WebAPINet6.WebApi.Middleware
             try
             {
                 string regex = @"^\s*(tts-[0-9]+\s?)+\s*$";
-                var ids = context.Request.RouteValues["ids"].ToString();
+                var ids = context.Request.RouteValues["ids"];
 
-                if (Regex.Match(ids, regex).Success)
+                if (ids != null && Regex.Match(ids.ToString(), regex).Success)
                 {
                     _logger.LogInformation("ID has good format!");
                     await next.Invoke(context);

@@ -20,10 +20,10 @@ namespace WebAPINet6.BusinessLogic.Services
 
         public async Task<List<SymbolInfo>> GetSymbols(string ids)
         {
-            string? uri = _ttwsConfig.Uri;
+            string uri = _ttwsConfig.Uri;
             int customerID = _ttwsConfig.CustomerID;
 
-            string? xml_string = await _client.GetSymbolsByIDs(ids, uri, customerID);
+            string xml_string = await _client.GetSymbolsByIDs(ids, uri, customerID);
 
             var xml_parse = _parseXml.Parse(xml_string);
 

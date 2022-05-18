@@ -54,7 +54,6 @@ namespace WebAPINet6.BusinessLogic.Services
                 
                 lock (_keys)
                     _keys.cacheKeys.Add(id);
-                
                 _logger.LogInformation("SERVICE: In cache added id: {id}", id);
             }
 

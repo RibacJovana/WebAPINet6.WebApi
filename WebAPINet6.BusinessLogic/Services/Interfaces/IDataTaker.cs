@@ -9,6 +9,6 @@ namespace WebAPINet6.BusinessLogic.Services.Interfaces
 {
     public interface IDataTaker
     {
-        public Task<List<SymbolInfo>> GetSymbolsInfo(string[]? ids = null);
+        public Task<List<SymbolInfo>> GetSymbolsInfo(string[] ids);
     }
 }
