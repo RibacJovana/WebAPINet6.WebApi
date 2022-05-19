@@ -24,10 +24,9 @@ namespace WebAPINet6.BusinessLogic.Services
             int customerID = _ttwsConfig.CustomerID;
 
             string xml_string = await _client.GetSymbolsByIDs(ids, uri, customerID);
-
             var xml_parse = _parseXml.Parse(xml_string);
 
-            return xml_parse; 
+            return xml_parse;
         }
     }
 }

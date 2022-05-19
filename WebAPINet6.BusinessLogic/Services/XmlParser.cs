@@ -10,22 +10,21 @@ namespace WebAPINet6.BusinessLogic.Services
     {
         public List<SymbolInfo> Parse(string xml_string)
         {
-            List<SymbolInfo>? result = new();
+            List<SymbolInfo> result = new();
 
             // dobijamo xml koji je tipa string i parsiramo ga da dobijemo XElement
             XElement _xElement = XElement.Parse(xml_string);
             XNamespace nameSpace = _xElement.Name.Namespace;
-
             IEnumerable<XElement> symbolsFromXElement = _xElement.Descendants(nameSpace + "Symbol");
 
-            XmlSerializer serializer = new(typeof(SymbolInfo));
-
             // deserializujemo objekte iz xml formata u objekat klase i dodajemo u nasu listu objekata
+            XmlSerializer serializer = new(typeof(SymbolInfo));
             foreach (XElement symbol in symbolsFromXElement)
             {
                 using XmlReader reader = symbol.CreateReader();
                 result.Add((SymbolInfo)serializer.Deserialize(reader)!);
             }
+
             return result;
         }
     }

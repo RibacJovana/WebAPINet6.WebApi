@@ -20,15 +20,15 @@ namespace WebAPINet6.WebApi.Controllers
         [HttpGet("{ids}")]
         public async Task<List<SymbolInfo>> GetSymbols(string ids = "tts-78738373") // tts-78738373 -> Gold
         {
-            // splitujemo sve id-ijeve u slucaju da prosledimo > 1 id-a u request,
-            // npr: https://localhost:7050/Symbol/GetSymbols/tts-78738373&tts-78738433
-            string[] arrayIds = ids.Split(" ");
-
             _logger.LogInformation("Input is ids: {ids}", ids);
 
+            // splitujemo sve id-ijeve u slucaju da prosledimo > 1 id-a u requestu,
+            // npr: https://localhost:7050/Symbol/GetSymbols/tts-78738373&tts-78738433
+            string[] arrayIds = ids.Split(" ");
             var result = await _dataTaker.GetSymbolsInfo(arrayIds);
 
             _logger.LogInformation("Result count is {count}", result.Count);
+
             return result;
         }
     }

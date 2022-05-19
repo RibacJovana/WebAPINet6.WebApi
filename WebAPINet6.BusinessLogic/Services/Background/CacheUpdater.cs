@@ -8,6 +8,10 @@ namespace WebAPINet6.BusinessLogic.Services.Background
 {
     public class CacheUpdater : BackgroundService
     {
+
+        // definisem i deklarisem globalne promenljive
+        public static readonly int TIMER_background = 60;
+        public static readonly int TIMER_cache = 30;
         private readonly IServiceProvider _provider;
         private readonly Keys _keys;
         private readonly ILogger<CacheUpdater> _log;
@@ -20,6 +24,7 @@ namespace WebAPINet6.BusinessLogic.Services.Background
             _log = logger;
             _cache = cache;
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
@@ -37,12 +42,12 @@ namespace WebAPINet6.BusinessLogic.Services.Background
                     {
                         var result = await client.GetSymbols(key);
                         
-                        _cache.Set(key, result.First(), TimeSpan.FromSeconds(60));
+                        _cache.Set(key, result.First(), TimeSpan.FromSeconds(TIMER_cache));
                         _log.LogInformation("BACKGROUND TASK: In cache, updated id: {id}", key);
                     }
                 }
                 
-                await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(TIMER_background), stoppingToken);
             }
         }
     }

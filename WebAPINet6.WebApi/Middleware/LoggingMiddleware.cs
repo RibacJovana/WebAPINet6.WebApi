@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace WebAPINet6.WebApi.Middleware
@@ -21,7 +22,7 @@ namespace WebAPINet6.WebApi.Middleware
                 string regex = @"^\s*(tts-[0-9]+\s?)+\s*$";
                 var ids = context.Request.RouteValues["ids"];
 
-                if (ids != null && Regex.Match(ids.ToString(), regex).Success)
+                if (Regex.Match(ids!.ToString()!, regex).Success)
                 {
                     _logger.LogInformation("ID has good format!");
                     await next.Invoke(context);
@@ -29,16 +30,31 @@ namespace WebAPINet6.WebApi.Middleware
                 else
                 {
                     _logger.LogWarning("ID has bad format!");
-
-                    context.Response.ContentType = "text/plain";
-                    context.Response.StatusCode = 404;
-                    await context.Response.WriteAsync("Error!\n Id has bad format!\n It should be: tts-br / tts-br tts-br tts-br.. ");
+                    throw new BadHttpRequestException("Error!\n Id has bad format!\n It should be: tts-br / tts-br tts-br tts-br.. ");
                 }
+            }
+            catch (BadHttpRequestException ex)
+            {
+                _logger.LogError(ex, "Problem with request.");
+                await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Server is temporarily unavailable.");
+                await HandleExceptionAsync(context, ex, HttpStatusCode.ServiceUnavailable);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occured while executing request.");
+                _logger.LogError(ex, "Generic error has occurred on the server.");
+                await HandleExceptionAsync(context, ex, HttpStatusCode.InternalServerError);
             }
+        }
+
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception, HttpStatusCode httpStatusCode, string content_type = "text/plain")
+        {
+            context.Response.ContentType = content_type;
+            context.Response.StatusCode = (int)httpStatusCode;
+            return context.Response.WriteAsync(exception.Message);
         }
     }
 }

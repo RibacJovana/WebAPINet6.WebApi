@@ -5,30 +5,31 @@ using WebAPINet6.BusinessLogic.Services;
 using WebAPINet6.BusinessLogic.Enumerations;
 using WebAPINet6.BusinessLogic.Services.Background;
 using WebAPINet6.BusinessLogic.Services.Interfaces;
-using Polly.Registry;
 using Polly;
+using Polly.Registry;
 
 WebApplicationBuilder webApplicationBuilder = WebApplication.CreateBuilder(args);
 
-// Set configuration
+// Postavlja konfiguraciju
 var environment = webApplicationBuilder.Environment;
 webApplicationBuilder.Configuration.AddJsonFile("appsettings.json", optional: true)
                                    .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true);
 
 ConfigureLogging(webApplicationBuilder.Logging, webApplicationBuilder.Configuration, webApplicationBuilder.Environment);
 
-// Add services to the container.
+// DOdaje service u DI kontejner
 ConfigureServices(webApplicationBuilder.Services, webApplicationBuilder.Configuration);
 
 WebApplication webApplication = webApplicationBuilder.Build();
 
 ConfigureMiddleware(webApplication, webApplication.Services, webApplication.Environment);
+
 ConfigureEndpoints(webApplication);
 
 webApplication.Run();
 
 
-// Methods
+// Metode
 
 static void ConfigureLogging(ILoggingBuilder logging, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
 {
@@ -47,22 +48,19 @@ static void ConfigureServices(IServiceCollection services, IConfiguration config
 
     services.Configure<TTWSConfiguration>(configuration.GetSection(nameof(TTWSConfiguration)));
 
-    services.AddPolicyRegistry(new PolicyRegistry() 
-    {
-        {    
-            "HttpClientPolicy",
-            Policy.Handle<Exception>().WaitAndRetryAsync(new[]
-            {
+    services.AddHttpClient("Client").AddTransientHttpErrorPolicy( policy =>
+        policy.WaitAndRetryAsync(new[]
+        {
                 TimeSpan.FromMilliseconds(200),
                 TimeSpan.FromMilliseconds(500),
                 TimeSpan.FromSeconds(1)
-            }, (exception, timespan) =>
+            }, onRetry: (exception, timespan) =>
             {
-                Console.WriteLine(exception.Message, timespan);
-            })
-        }
-    });
-    services.AddHttpClient("Client"); //.AddPolicyHandlerFromRegistry("HttpClientPolicy");
+                Console.WriteLine(exception.Exception.Message, timespan);
+            }
+        )
+    );
+
     services.AddSingleton<Keys>();
     services.AddScoped<IClient, Client>();
     services.AddScoped<IXmlParser, XmlParser>();
@@ -97,7 +95,6 @@ static void ConfigureMiddleware(IApplicationBuilder builder, IServiceProvider pr
     builder.UseMiddleware<LoggingMiddleware>();
 
     builder.UseHttpsRedirection();
-
     builder.UseAuthorization();
 }
 
