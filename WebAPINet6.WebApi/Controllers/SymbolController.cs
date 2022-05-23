@@ -28,7 +28,7 @@ namespace WebAPINet6.WebApi.Controllers
             var result = await _dataTaker.GetSymbolsInfo(arrayIds);
 
             _logger.LogInformation("Result count is {count}", result.Count);
-
+            
             return result;
         }
     }

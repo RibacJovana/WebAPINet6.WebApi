@@ -17,7 +17,7 @@ webApplicationBuilder.Configuration.AddJsonFile("appsettings.json", optional: tr
 
 ConfigureLogging(webApplicationBuilder.Logging, webApplicationBuilder.Configuration, webApplicationBuilder.Environment);
 
-// DOdaje service u DI kontejner
+// Dodaje service u DI kontejner
 ConfigureServices(webApplicationBuilder.Services, webApplicationBuilder.Configuration);
 
 WebApplication webApplication = webApplicationBuilder.Build();
@@ -39,6 +39,7 @@ static void ConfigureLogging(ILoggingBuilder logging, IConfiguration configurati
     if (hostEnvironment.EnvironmentName == Environments.Production) return;
 
     logging.AddFile();
+    logging.AddConsole();
 }
 
 static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
